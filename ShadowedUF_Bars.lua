@@ -7,11 +7,19 @@ local SL = ShadowUFLocals
 local Bars = {}
 ShadowUF:RegisterModule(Bars, "impbars")
 
+-- Technically speaking, this is invalid. Setting a width to 0 will defaulkt it to 2x the bar size or so (not sure why but quick fix)
+-- setting it to anything above or below 0 will make it basically hidden which suits the purpose nicely
+local size, percent
 local function SetValue(self, value)
+	percent = value / self.impBar.maxValue
+	percent = percent > 1 and 1 or percent < 0 and 0 or percent
+	
 	if( self.impBar.growth == "horizontal" ) then
-		self.impBar:SetWidth((value / self.impBar.maxValue) * self:GetWidth())
+		size = percent * self:GetWidth()
+		self.impBar:SetWidth(size <= 0 and 0.01 or size)
 	else
-		self.impBar:SetHeight((value / self.impBar.maxValue) * self:GetHeight())
+		size = percent * self:GetHeight()
+		self.impBar:SetHeight(size <= 0 and 0.01 or size)
 	end
 	
 	self.impBar.currentValue = value
