@@ -7,3 +7,5 @@
 localization.enUS.lua
 
 ShadowedUF_Bars.lua
+## druid.lua
+empty.lua

@@ -1,4 +1,8 @@
 SUFBarsLocals = {
+	["Color"] = "Color",
+	["Use texture"] = "Use texture",
+	["When enabled it will use a bar texture colored by whatever you set, if you don't enabled this then a solid color is shown with whatever alpha setting you choose."] = "When enabled it will use a bar texture colored by whatever you set, if you don't enabled this then a solid color is shown with whatever alpha setting you choose.",
+	["Empty bar"] = "Empty bar",
 	["Left -> Right"] = "Left -> Right",
 	["Right -> Left"] = "Right -> Left",
 	["Top -> Bottom"] = "Top -> Bottom",
