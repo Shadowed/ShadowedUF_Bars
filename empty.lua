@@ -79,17 +79,21 @@ ShadowUF.OnInitialize = function(self)
 		local foundLeft, foundRight
 		for _, text in pairs(ShadowUF.db.profile.units[unit].text) do
 			if( text.anchorTo == "$emptyBar" ) then
-				if( text.name == SL["Left text"] ) then foundLeft = true end
-				if( text.name == SL["Right text"] ) then foundRight = true end
+				if( text.name == SL["Left text"] ) then foundLeft = text end
+				if( text.name == SL["Right text"] ) then foundRight = text end
 			end
 		end
 		
 		if( not foundLeft ) then
-			table.insert(ShadowUF.db.profile.units[unit].text, {width = 0.60, enabled = true, name = SL["Left text"], text = "[name]", anchorTo = "$emptyBar", anchorPoint = "ICL", size = 0, x = 0, y = 0})
+			table.insert(ShadowUF.db.profile.units[unit].text, {width = 0.60, enabled = true, name = SL["Left text"], text = "[name]", anchorTo = "$emptyBar", anchorPoint = "CLI", size = 0, x = 0, y = 0})
+		elseif( foundLeft.anchorPoint == "ICL" ) then
+			foundLeft.anchorPoint = "CLI"
 		end
 		
 		if( not foundRight ) then
-			table.insert(ShadowUF.db.profile.units[unit].text, {width = 0.40, enabled = true, name = SL["Right text"], text = "", anchorTo = "$emptyBar", anchorPoint = "ICR", size = 0, x = 0, y = 0})
+			table.insert(ShadowUF.db.profile.units[unit].text, {width = 0.40, enabled = true, name = SL["Right text"], text = "", anchorTo = "$emptyBar", anchorPoint = "CRI", size = 0, x = 0, y = 0})
+		elseif( foundRight.anchorPoint == "ICL" ) then
+			foundRight.anchorPoint = "CLI"
 		end
 	end
 end
