@@ -64,7 +64,7 @@ function Bars:OnDefaultsSet()
 
 			local bar = frame[self.moduleKey]
 			if( not bar.impBar ) then
-				bar.impBar = bar:CreateTexture(nil, "OVERLAY")
+				bar.impBar = bar:CreateTexture(nil, "ARTWORK")
 
 				bar.impBar.minValue = 0
 				bar.impBar.maxValue = 0
