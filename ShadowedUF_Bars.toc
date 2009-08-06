@@ -1,4 +1,4 @@
-## Interface: 30100
+## Interface: 30200
 ## Title: ShadowedUF Bars
 ## Notes: Adds new functionality to bars in SUF
 ## Author: Mayen
@@ -7,5 +7,3 @@
 localization.enUS.lua
 
 ShadowedUF_Bars.lua
-## druid.lua
-empty.lua
