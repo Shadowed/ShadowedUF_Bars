@@ -1,10 +1,10 @@
 --[[ 
-	Shadow Unit Frames (Bars), Mayen of Mal'Ganis (US) PvP
+	Shadow Unit Frames (Bars), Shadow of Mal'Ganis (US) PvP
 ]]
 
-local L = SUFBarsLocals
+local Bars = select(2, ...)
+local L = Bars.L
 local SL = ShadowUFLocals
-local Bars = {}
 ShadowUF:RegisterModule(Bars, "impbars")
 
 -- Technically speaking, this is invalid. Setting a width to 0 will defaulkt it to 2x the bar size or so (not sure why but quick fix)
@@ -47,48 +47,6 @@ local function SetStatusBarColor(self, r, g, b, a)
 	end
 end
 
-function Bars:OnDefaultsSet()
-	for _, unit in pairs(ShadowUF.units) do
-		ShadowUF.defaults.profile.units[unit].healthBar.growth = "RIGHT:LEFT"
-		ShadowUF.defaults.profile.units[unit].healthBar.invert = false
-
-		ShadowUF.defaults.profile.units[unit].powerBar.growth = "RIGHT:LEFT"
-		ShadowUF.defaults.profile.units[unit].powerBar.invert = false
-	end
-	
-	-- Hook the OnEnables to ensure we have the first hook on the bars
-	local function hookModule(module)
-		local OnEnable = module.OnEnable
-		module.OnEnable = function(self, frame, ...)
-			OnEnable(self, frame, ...)
-
-			local bar = frame[self.moduleKey]
-			if( not bar.impBar ) then
-				bar.impBar = bar:CreateTexture(nil, "ARTWORK")
-
-				bar.impBar.minValue = 0
-				bar.impBar.maxValue = 0
-				bar.impBar.currentValue = 0
-				bar.impBar.origBarColor = bar.SetStatusBarColor
-				bar.impBar.origSetValue = bar.SetValue
-
-				bar:SetMinMaxValues(0, 1)
-				bar:SetValue(0)
-
-				bar.SetValue = SetValue
-				bar.GetValue = GetValue
-				bar.SetMinMaxValues = SetMinMaxValues
-				bar.GetMinMaxValues = GetMinMaxValues
-				bar.SetStatusBarColor = SetStatusBarColor
-			end
-		end
-	end
-	
-	hookModule(ShadowUF.modules.healthBar)
-	hookModule(ShadowUF.modules.incHeal)
-	hookModule(ShadowUF.modules.powerBar)
-end
-
 local function positionBar(bar, parent, barType)
 	bar.impBar:SetTexture(ShadowUF.Layout.mediaPath.statusbar)
 	
@@ -99,22 +57,8 @@ local function positionBar(bar, parent, barType)
 	end
 	
 	local drawType = ShadowUF.db.profile.units[bar.parent.unitType][barType].growth
-	-- Right -> Left meaning anchor to the left side so at full width it touches the right side
-	if( drawType == "RIGHT:LEFT" ) then
-		bar.impBar.growth = "horizontal"
-		bar.impBar:ClearAllPoints()
-		bar.impBar:SetPoint("TOPLEFT", parent, 0, 0)
-		bar.impBar:SetPoint("BOTTOMLEFT", parent, 0, 0)
-		
-	-- Left -> Right meaning anchor to the right
-	elseif( drawType == "LEFT:RIGHT" ) then
-		bar.impBar.growth = "horizontal"
-		bar.impBar:ClearAllPoints()
-		bar.impBar:SetPoint("TOPRIGHT", parent)
-		bar.impBar:SetPoint("BOTTOMRIGHT", parent)
-	
 	-- Top -> Bottom meaning anchor to the top
-	elseif( drawType == "TOP:BOTTOM" ) then
+	if( drawType == "TOP:BOTTOM" ) then
 		bar.impBar.growth = "vertical"
 		bar.impBar:ClearAllPoints()
 		bar.impBar:SetPoint("BOTTOMLEFT", parent)
@@ -126,6 +70,20 @@ local function positionBar(bar, parent, barType)
 		bar.impBar:ClearAllPoints()
 		bar.impBar:SetPoint("TOPLEFT", parent)
 		bar.impBar:SetPoint("TOPRIGHT", parent)
+	
+	-- Left -> Right meaning anchor to the right
+	elseif( drawType == "LEFT:RIGHT" ) then
+		bar.impBar.growth = "horizontal"
+		bar.impBar:ClearAllPoints()
+		bar.impBar:SetPoint("TOPRIGHT", parent)
+		bar.impBar:SetPoint("BOTTOMRIGHT", parent)
+	
+	-- Right -> Left meaning anchor to the left side so at full width it touches the right side
+	else
+		bar.impBar.growth = "horizontal"
+		bar.impBar:ClearAllPoints()
+		bar.impBar:SetPoint("TOPLEFT", parent, 0, 0)
+		bar.impBar:SetPoint("BOTTOMLEFT", parent, 0, 0)
 	end
 end
 
@@ -144,6 +102,11 @@ function Bars:OnLayoutApplied(frame)
 end
 
 function Bars:OnConfigurationLoad()
+	for _, data in pairs(ShadowUF.db.profile.units) do
+		data.healthBar.growth = data.healthBar.growth or "RIGHT:LEFT"
+		data.powerBar.growth = data.powerBar.growth or "RIGHT:LEFT"
+	end
+	
 	local barTable = ShadowUF.Config.barTable
 	barTable.args.invert = {
 		order = 2.25,
@@ -171,4 +134,56 @@ function Bars:OnConfigurationLoad()
 		arg = "$parent.growth",
 		hidden = function(info) return info[#(info) - 1] ~= "healthBar" and info[#(info) - 1] ~= "powerBar" end,
 	}
+end
+
+-- Hook the OnEnables to ensure we have the first hook on the bars
+local function hookModule(module)
+	local OnEnable = module.OnEnable
+	module.OnEnable = function(self, frame, ...)
+		OnEnable(self, frame, ...)
+
+		local bar = frame[self.moduleKey]
+		if( not bar.impBar ) then
+			bar.impBar = bar:CreateTexture(nil, "ARTWORK")
+
+			bar.impBar.minValue = 0
+			bar.impBar.maxValue = 0
+			bar.impBar.currentValue = 0
+			bar.impBar.origBarColor = bar.SetStatusBarColor
+			bar.impBar.origSetValue = bar.SetValue
+
+			bar:SetMinMaxValues(0, 1)
+			bar:SetValue(0)
+
+			bar.SetValue = SetValue
+			bar.GetValue = GetValue
+			bar.SetMinMaxValues = SetMinMaxValues
+			bar.GetMinMaxValues = GetMinMaxValues
+			bar.SetStatusBarColor = SetStatusBarColor
+		end
+	end
+end
+
+hookModule(ShadowUF.modules.healthBar)
+hookModule(ShadowUF.modules.incHeal)
+hookModule(ShadowUF.modules.powerBar)
+
+for frame in pairs(ShadowUF.Units.frameList) do
+	if( frame.visibility.healthBar ) then
+		ShadowUF.modules.healthBar:OnEnable(frame)
+
+		if( frame.visibility.incHeal ) then
+			ShadowUF.modules.incHeal:OnEnable(frame)
+		end
+	end
+	
+	if( frame.visibility.powerBar ) then
+		ShadowUF.modules.powerBar:OnEnable(frame)
+	end
+	
+	if( frame.visibility.healthBar or frame.visibility.powerBar ) then
+		ShadowUF.Layout:Load(frame)
+		ShadowUF:FireModuleEvent("OnLayoutReload", frame.unit)
+		frame:FullUpdate()
+	end
 end
