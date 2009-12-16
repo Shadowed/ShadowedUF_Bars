@@ -1,7 +1,7 @@
-## Interface: 30200
+## Interface: 30300
 ## Title: ShadowedUF Bars
 ## Notes: Adds new functionality to bars in SUF
-## Author: Mayen
+## Author: Shadowed
 ## RequiredDeps: ShadowedUnitFrames
 
 localization.enUS.lua
