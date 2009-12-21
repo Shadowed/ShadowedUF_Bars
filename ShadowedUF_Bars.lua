@@ -102,7 +102,7 @@ function Bars:OnLayoutApplied(frame)
 end
 
 function Bars:OnConfigurationLoad()
-	for _, data in pairs(ShadowUF.db.profile.units) do
+	for _, data in pairs(ShadowUF.unitList) do
 		data.healthBar.growth = data.healthBar.growth or "RIGHT:LEFT"
 		data.powerBar.growth = data.powerBar.growth or "RIGHT:LEFT"
 	end
