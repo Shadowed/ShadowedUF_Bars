@@ -4,7 +4,7 @@
 
 local Bars = select(2, ...)
 local L = Bars.L
-local SL = ShadowUFLocals
+local SL = ShadowUF.L or ShadowUFLocals
 ShadowUF:RegisterModule(Bars, "impbars")
 
 -- Technically speaking, this is invalid. Setting a width to 0 will defaulkt it to 2x the bar size or so (not sure why but quick fix)
