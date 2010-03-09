@@ -38,24 +38,9 @@ local function GetMinMaxValues(self)
 	return self.impBar.minValue, self.impBar.maxValue
 end
 
-local function SetStatusBarColor(self, r, g, b, a)
-	if( self.impBar.invert ) then
-		self.impBar:SetVertexColor(0, 0, 0, 0.90)
-		self.impBar.origBarColor(self, r, g, b, a)
-	else
-		self.impBar:SetVertexColor(r, g, b, a)
-	end
-end
-
 local function positionBar(bar, parent, barType)
 	bar.impBar:SetTexture(ShadowUF.Layout.mediaPath.statusbar)
-	
-	-- When inverted bars are on, the old status bar becomes the background
-	if( bar == parent ) then
-		bar.impBar.invert = ShadowUF.db.profile.units[bar.parent.unitType][barType].invert
-		bar.impBar.origSetValue(bar, bar.impBar.invert and 1 or 0)
-	end
-	
+		
 	local drawType = ShadowUF.db.profile.units[bar.parent.unitType][barType].growth
 	-- Top -> Bottom meaning anchor to the top
 	if( drawType == "TOP:BOTTOM" ) then
@@ -109,15 +94,6 @@ function Bars:OnConfigurationLoad()
 	end
 	
 	local barTable = ShadowUF.Config.barTable
-	barTable.args.invert = {
-		order = 2.25,
-		type = "toggle",
-		name = L["Invert colors"],
-		desc = L["Inverts the bar color so it's easier to see the deficit."],
-		hidden = function(info) return info[#(info) - 1] ~= "healthBar" and info[#(info) - 1] ~= "powerBar" end,
-		arg = "$parent.invert",
-	}
-	
 	barTable.args.growthSep = {
 		order = 2.5,
 		type = "description",
