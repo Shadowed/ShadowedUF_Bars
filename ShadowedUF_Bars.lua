@@ -38,6 +38,11 @@ local function GetMinMaxValues(self)
 	return self.impBar.minValue, self.impBar.maxValue
 end
 
+
+local function SetStatusBarColor(self, r, g, b, a)
+	self.impBar:SetVertexColor(r, g, b, a)
+end
+
 local function positionBar(bar, parent, barType)
 	bar.impBar:SetTexture(ShadowUF.Layout.mediaPath.statusbar)
 		
