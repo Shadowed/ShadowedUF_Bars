@@ -107,7 +107,7 @@ function Bars:OnConfigurationLoad()
 		width = "full",
 	}
 
-	barTable.args.barGrowh = {
+	barTable.args.barGrowth = {
 		order = 3,
 		type = "select",
 		name = L["Bar growth"],
